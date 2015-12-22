@@ -1,6 +1,6 @@
 $(document).ready(function(){
     
-    
+    //something
    
      $('#playerModal').modal({
          backdrop: false,
@@ -263,6 +263,8 @@ var checkBoard = function(){
 
 
 $cells.click(function (event) {
+    
+    
 
     var element = event.target;
     var cellIndex = $(element).attr("id");
