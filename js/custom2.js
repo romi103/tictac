@@ -1,6 +1,6 @@
 $(document).ready(function(){
     
-    //something
+    ///If ()
    
      $('#playerModal').modal({
          backdrop: false,
