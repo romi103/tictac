@@ -10,15 +10,16 @@ $(document).ready(function () {
         //closing select symbol modal
         $('#playerModal').on('hidden.bs.modal', function (e) {
             activeBoard = true;
-            
+
             //activating board 
             $cells.on("click", main);
         });
     });
-    
-    $("#resetGame").click(function(){
+
+    $("#resetGame").click(function () {
         $cells.off();
         reset();
+        main();
     });
 
 });
@@ -51,21 +52,37 @@ var $board = $("c0, c1, c2, c3, c4, c5, c6, c7, c8");
 
 
 function wonGame(combination) {
-    
+$cells.off();
 
-    var flashLights = function() {
+    function flashLights () {
+        var def = new $.Deferred();
         combination.animate({
-        backgroundColor: "#abcdef"
-    }, 250, function () {
-        combination.animate({
-            backgroundColor: "white"
-        }, 250);
-    });
+            backgroundColor: "#abcdef"
+        }, 300, function () {
+            combination.animate({
+                backgroundColor: "white"
+            }, 300, function() {
+                def.resolve();
+            });
+        });
+        return def;
     }
+
     
-    flashLights();
-    
-    setInterval(flashLights, 250);
+    flashLights().then(function(){
+        var def = new $.Deferred();
+        setTimeout(function(){
+            def.resolve();
+            reset();
+        }, 1500);
+        return def;
+    }).then(function(){
+         board = [];
+    $cells.on("click", main);
+    });
+
+   
+
 
 }
 
@@ -79,13 +96,13 @@ function reset() {
     var c6 = "";
     var c7 = "";
     var c8 = "";
-    
-    
-    $.each($cells, function(index, value){
-       
-       
+
+
+    $.each($cells, function (index, value) {
+
+
         value.innerHTML = "";
-  
+
     });
 }
 
@@ -130,7 +147,7 @@ function winCheck(valplayer) {
     }
 
     if (c2 == valplayer && c4 == valplayer && c6 == valplayer) {
-        winningComb = $("#2, #4, #6").addClass("red");
+        winningComb = $("#2, #4, #6");
         console.log(winningComb);
         wonGame(winningComb);
 
@@ -271,31 +288,31 @@ var checkBoard = function () {
 
 
 //main game
-    var main = function (event) {
+var main = function (event) {
 
 
 
-                var element = event.target;
-                var cellIndex = $(element).attr("id");
-                if (player) {
+    var element = event.target;
+    var cellIndex = $(element).attr("id");
+    if (player) {
 
 
 
-                    if (!board[cellIndex]) {
-                        $(element).text(playerSymbol);
+        if (!board[cellIndex]) {
+            $(element).text(playerSymbol);
 
-                        board[cellIndex] = playerSymbol;
+            board[cellIndex] = playerSymbol;
 
-                        winCheck(playerSymbol);
-                        player = false;
+            winCheck(playerSymbol);
+            player = false;
 
 
-                        checkBoard();
+            checkBoard();
 
-                        compMove(playerSymbol, computerSymbol);
-                        checkBoard();
-                        winCheck(computerSymbol);
-                    }
-                }
+            compMove(playerSymbol, computerSymbol);
+            checkBoard();
+            winCheck(computerSymbol);
+        }
+    }
 
-            };
+};
