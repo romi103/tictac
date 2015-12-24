@@ -19,7 +19,7 @@ $(document).ready(function () {
     $("#resetGame").click(function () {
         $cells.off();
         reset();
-        main();
+        $cells.on("click", main);
     });
 
 });
@@ -50,36 +50,34 @@ var c7 = "";
 var c8 = "";
 var $board = $("c0, c1, c2, c3, c4, c5, c6, c7, c8");
 
+function flashLights(combination) {
+    var def = new $.Deferred();
+    combination.animate({
+        backgroundColor: "#abcdef"
+    }, 300, function () {
+        combination.animate({
+            backgroundColor: "white"
+        }, 300, function () {
+            def.resolve();
+        });
+    });
+    return def;
+}
 
 function wonGame(combination) {
 $cells.off();
 
-    function flashLights () {
-        var def = new $.Deferred();
-        combination.animate({
-            backgroundColor: "#abcdef"
-        }, 300, function () {
-            combination.animate({
-                backgroundColor: "white"
-            }, 300, function() {
-                def.resolve();
-            });
-        });
-        return def;
-    }
-
-    
-    flashLights().then(function(){
-        var def = new $.Deferred();
-        setTimeout(function(){
-            def.resolve();
-            reset();
-        }, 1500);
-        return def;
-    }).then(function(){
-         board = [];
+flashLights(combination).then(function () {
+    var def = new $.Deferred();
+    setTimeout(function () {
+        def.resolve();
+        reset();
+    }, 1500);
+    return def;
+}).then(function () {
+    board = [];
     $cells.on("click", main);
-    });
+});
 
    
 
@@ -302,12 +300,12 @@ var main = function (event) {
             $(element).text(playerSymbol);
 
             board[cellIndex] = playerSymbol;
-
+            checkBoard();
             winCheck(playerSymbol);
             player = false;
 
 
-            checkBoard();
+            
 
             compMove(playerSymbol, computerSymbol);
             checkBoard();
